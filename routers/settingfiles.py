@@ -1,7 +1,7 @@
 import os
 from typing import List, cast
 
-from fastapi import APIRouter, HTTPException, UploadFile, status
+from fastapi import APIRouter, File, HTTPException, UploadFile, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from starlette.responses import FileResponse
@@ -53,7 +53,7 @@ def get(filename: str) -> FileResponse:
 
 
 @router.post("/post/{filename}")
-def post(filename: str, upload_file: UploadFile) -> JSONResponse:
+def post(filename: str, file: UploadFile = File(...)) -> JSONResponse:
 
     if "/" in filename:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="サブディレクトリの指定は無効です。")
@@ -64,13 +64,13 @@ def post(filename: str, upload_file: UploadFile) -> JSONResponse:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"{filename}は既に存在しています。")
 
     with open(save_path, "wb") as f:
-        f.write(upload_file.file.read())
+        f.write(file.file.read())
 
     return JSONResponse(status_code=status.HTTP_201_CREATED)
 
 
 @router.put("/put/{filename}")
-def put(filename: str, upload_file: UploadFile) -> JSONResponse:
+def put(filename: str, file: UploadFile = File(...)) -> JSONResponse:
 
     if "/" in filename:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="サブディレクトリの指定は無効です。")
@@ -84,7 +84,7 @@ def put(filename: str, upload_file: UploadFile) -> JSONResponse:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"{filename}はファイルではありません。")
 
     with open(os.path.join(SAVE_DIRECTORY, filename), "wb") as f:
-        f.write(upload_file.file.read())
+        f.write(file.file.read())
 
     return JSONResponse(status_code=status.HTTP_200_OK)
 

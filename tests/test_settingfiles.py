@@ -10,7 +10,7 @@ def test_settingfiles_list() -> None:
 
 
 def test_settingfiles_isexist() -> None:
-    response = requests.get("{}/isexist/{}".format(API_URL, "newdata.csv"))
+    response = requests.get("{}/check/{}".format(API_URL, "newdata.csv"))
 
     print(response.json())
 
@@ -22,22 +22,20 @@ def test_settingfiles_get() -> None:
 
 
 def test_settingfiles_post() -> None:
-    with open("tests/newdata.csv") as fp:
-        content = fp.read()
+    file = {"file": open("tests/newdata.csv", "rb")}
 
     response = requests.post(
-        "{}/post/{}".format(API_URL, "newdata.csv"), data=content
+        "{}/post/{}".format(API_URL, "newdata.csv"), files=file
     )
 
     print(response.status_code)
 
 
 def test_settingfiles_put() -> None:
-    with open("tests/newdata.csv") as fp:
-        content = fp.read()
+    file = {"file": open("tests/newdata.csv", "rb")}
 
     response = requests.put(
-        "{}/put/{}".format(API_URL, "newdata.csv"), data=content
+        "{}/put/{}".format(API_URL, "newdata.csv"), files=file
     )
 
     print(response.status_code)

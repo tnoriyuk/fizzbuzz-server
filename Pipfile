@@ -4,12 +4,13 @@ verify_ssl = true
 name = "pypi"
 
 [scripts]
-main = "python src/main.py"
+main = "uvicorn main:app"
 
 [packages]
-flask = "*"
 fastapi = "*"
 uvicorn = "*"
+aiofiles = "*"
+python-multipart = "*"
 
 [dev-packages]
 autopep8 = "*"
