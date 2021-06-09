@@ -8,6 +8,8 @@ main = "python src/main.py"
 
 [packages]
 flask = "*"
+fastapi = "*"
+uvicorn = "*"
 
 [dev-packages]
 autopep8 = "*"

@@ -1,6 +1,6 @@
 import requests
 
-API_URL = "http://127.0.0.1:60000/settingfiles"
+API_URL = "http://127.0.0.1:8000/settingfiles"
 
 
 def test_settingfiles_list() -> None:
