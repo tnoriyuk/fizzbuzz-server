@@ -1,9 +1,9 @@
-from typing import Tuple, cast
-from flask import Flask, request, abort, jsonify, send_from_directory
-from flask import Blueprint
 import os
+from typing import Tuple, cast
 
 import flask
+from flask import Blueprint, abort, jsonify, request, send_from_directory
+
 app = Blueprint("settingfiles", __name__, url_prefix="/settingfiles")
 
 SAVE_DIRECTORY = cast(str, os.environ.get("SAVE_DIRECTORY"))
@@ -12,21 +12,14 @@ if not os.path.exists(SAVE_DIRECTORY):
     os.makedirs(SAVE_DIRECTORY)
 
 
-api = Flask(__name__)
-
-
-@api.route("/list", methods=["GET"])
+@app.route("/list", methods=["GET"])
 def list() -> flask.Response:
     """Endpoint to list files on the server."""
-    files = []
-    for filename in os.listdir(SAVE_DIRECTORY):
-        path = os.path.join(SAVE_DIRECTORY, filename)
-        if os.path.isfile(path):
-            files.append(filename)
+    files = [filename for filename in os.listdir(SAVE_DIRECTORY) if os.path.isfile(os.path.join(SAVE_DIRECTORY, filename)) and not filename.startswith(".")]
     return jsonify(files)
 
 
-@api.route("/isexist/<str:filename>", methods=["GET"])
+@app.route("/isexist/<string:filename>", methods=["GET"])
 def isexist(filename: str) -> flask.Response:
     save_path = os.path.join(SAVE_DIRECTORY, filename)
 
@@ -36,7 +29,7 @@ def isexist(filename: str) -> flask.Response:
     return jsonify({"isexists": os.path.exists(save_path), "isfile": os.path.isfile(save_path)})
 
 
-@api.route("/get/<str:filename>", methods=["GET"])
+@app.route("/get/<string:filename>", methods=["GET"])
 def get(filename: str) -> flask.Response:
 
     if "/" in filename:
@@ -53,9 +46,8 @@ def get(filename: str) -> flask.Response:
     return send_from_directory(SAVE_DIRECTORY, filename, as_attachment=True)
 
 
-@api.route("/post/<str:filename>", methods=["POST"])
+@app.route("/post/<string:filename>", methods=["POST"])
 def post(filename: str) -> Tuple[str, int]:
-    """Upload a file."""
 
     if "/" in filename:
         abort(400, "サブディレクトリの指定は無効です。")
@@ -72,7 +64,7 @@ def post(filename: str) -> Tuple[str, int]:
     return "", 201
 
 
-@api.route("/put/<str:filename>", methods=["PUT"])
+@app.route("/put/<string:filename>", methods=["PUT"])
 def put(filename: str) -> str:
 
     if "/" in filename:
@@ -92,9 +84,8 @@ def put(filename: str) -> str:
     return ""
 
 
-@api.route("/delete/<str:filename>", methods=["DELETE"])
+@app.route("/delete/<string:filename>", methods=["DELETE"])
 def delete(filename: str) -> str:
-    """Upload a file."""
 
     if "/" in filename:
         abort(400, "サブディレクトリの指定は無効です。")

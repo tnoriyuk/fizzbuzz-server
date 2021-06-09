@@ -10,14 +10,14 @@ app.register_blueprint(settingfiles)
 app.register_blueprint(settings)
 
 
-@app.route('/')
+@app.route("/")
 def index() -> str:
-    return 'Hello main'
+    return "running"
 
 
 def main() -> None:
-    app.run(host='127.0.0.1', port=60000, debug=True, load_dotenv=True)
+    app.run(host="127.0.0.1", port=60000, debug=True, load_dotenv=True)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
