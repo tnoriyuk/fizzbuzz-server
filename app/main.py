@@ -1,13 +1,11 @@
 from flask import Flask
 
 from controllers.settingfiles import app as settingfiles
-from controllers.settings import app as settings
 
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
 
 app.register_blueprint(settingfiles)
-app.register_blueprint(settings)
 
 
 @app.route("/")
